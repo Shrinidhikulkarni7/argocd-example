@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp-service-srk-test
+  name: myapp-service
 spec:
   selector:
     app: myapp
