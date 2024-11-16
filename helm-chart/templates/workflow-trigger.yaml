@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: rollout-sensor
+  namespace: simple-web-prod
+spec:
+  template:
+    serviceAccountName: argo-events-sa
+  dependencies:
+    - name: rollout-dep
+      eventSourceName: rollout-es
+      eventName: rollout-preview
+  triggers:
+    - template:
+        name: workflow-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: web-test-
+              spec:
+                workflowTemplateRef:
+                  name: simple-web-test

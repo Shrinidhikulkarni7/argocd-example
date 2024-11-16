@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: simple-web-test
+  namespace: simple-web-prod
+spec:
+  entrypoint: web-test
+  templates:
+    - name: web-test
+      steps:
+        - - name: health-check
+            template: curl-test
+        - - name: load-test
+            template: hey-test
+
+    - name: curl-test
+      container:
+        image: curlimages/curl:7.87.0
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            for i in {1..5}; do
+              curl -s -o /dev/null -w "%{http_code}" http://simple-web-prod-preview:80 | grep 200 || exit 1
+              sleep 2
+            done
+
+    - name: hey-test
+      container:
+        image: gcr.io/hey-release/hey
+        args:
+          - -z=10s
+          - -c=10
+          - http://simple-web-prod-preview:80
