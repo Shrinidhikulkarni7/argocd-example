@@ -1,4 +1,8 @@
-replicaCount: 3
+rollout:
+  replicas: 3
+  strategy:
+    blueGreen:
+      autoPromotionEnabled: false
 resources:
   limits:
     cpu: 1000m

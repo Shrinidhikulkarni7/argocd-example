@@ -1,4 +1,10 @@
-replicaCount: 2
+rollout:
+  replicas: 2
+  strategy:
+    blueGreen:
+      activeService: simple-web-active
+      previewService: simple-web-preview
+      autoPromotionEnabled: false
 
 image:
   repository: nginx
@@ -6,11 +12,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
   port: 80
-
-ingress:
-  enabled: false
 
 resources:
   limits:

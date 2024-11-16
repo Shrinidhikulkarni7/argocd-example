@@ -1,9 +1,22 @@
+# Active Service
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Values.rollout.strategy.blueGreen.activeService }}
 spec:
-  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 80
+  selector:
+    app: {{ .Release.Name }}
+
+---
+# Preview Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.rollout.strategy.blueGreen.previewService }}
+spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: 80
